@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  dictation-app:
+    container_name: dictation-container
+    build: .
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

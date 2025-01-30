@@ -1,0 +1,18 @@
+{
+  "name": "dictation-app",
+  "version": "1.0.0",
+  "description": "A simple dictation web app",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "serve -s build -l 3000"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "vite": "^4.4.9"
+  }
+}
