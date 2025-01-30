@@ -1,33 +1,25 @@
 # Use a lightweight Node.js image
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json first (better caching)
+# Copy package.json and install dependencies
 COPY package*.json ./
-
-# Ensure user has correct permissions (avoids permission errors)
-RUN adduser -D appuser && chown -R appuser /app
-USER appuser
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the project
-COPY --chown=appuser . .
+# Copy the entire project
+COPY . .
 
-# Build the React app
+# Build the app (reduces memory usage on Raspberry Pi)
 RUN npm run build
 
-# Switch back to root for serving
-USER root
+# Use a lightweight web server for production
+FROM nginx:alpine
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# Install a lightweight HTTP server
-RUN npm install -g serve
+# Expose port 80 for Nginx
+EXPOSE 80
 
-# Expose the port
-EXPOSE 3000
-
-# Start the server
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
